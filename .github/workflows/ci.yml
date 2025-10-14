@@ -26,6 +26,9 @@ jobs:
       - name: Security audit
         run: npm audit --audit-level=high
 
+      - name: Check licenses
+        run: npm run license:check
+
       - name: Check code formatting
         run: npm run format:check
 
