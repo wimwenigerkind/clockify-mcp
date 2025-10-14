@@ -56,6 +56,7 @@ async function clockifyRequest(
 server.registerTool(
     'get_current_user',
     {
+        title: 'Get Current User',
         description: 'Get information about the currently authenticated Clockify user',
         inputSchema: {},
     },
