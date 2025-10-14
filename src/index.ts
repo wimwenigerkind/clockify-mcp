@@ -2,6 +2,7 @@
 
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { z } from 'zod';
 
 const CLOCKIFY_API_BASE = 'https://api.clockify.me/api/v1';
 const CLOCKIFY_API_KEY = process.env.CLOCKIFY_API_KEY;
@@ -85,14 +86,28 @@ server.registerTool(
     'get_workspace_users',
     {
         title: 'Get Workspace Users',
-        description: 'Get all users in the active workspace',
-        inputSchema: {},
+        description: 'Get all users in a workspace (defaults to active workspace if not specified)',
+        inputSchema: {
+            workspaceId: z
+                .string()
+                .optional()
+                .describe(
+                    'The ID of the workspace to get users from (optional, defaults to active workspace)'
+                ),
+        },
     },
-    async () => {
-        const currentUser = await clockifyRequest('/user', CLOCKIFY_API_KEY);
-        const workspaceId = currentUser.activeWorkspace;
+    async ({ workspaceId }) => {
+        let targetWorkspaceId = workspaceId;
 
-        const users = await clockifyRequest(`/workspaces/${workspaceId}/users`, CLOCKIFY_API_KEY);
+        if (!targetWorkspaceId) {
+            const currentUser = await clockifyRequest('/user', CLOCKIFY_API_KEY);
+            targetWorkspaceId = currentUser.activeWorkspace;
+        }
+
+        const users = await clockifyRequest(
+            `/workspaces/${targetWorkspaceId}/users`,
+            CLOCKIFY_API_KEY
+        );
 
         return {
             content: [
