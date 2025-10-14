@@ -324,6 +324,80 @@ server.registerTool(
     }
 );
 
+// Tool: Get time entries
+server.registerTool(
+    'get_time_entries',
+    {
+        title: 'Get Time Entries',
+        description: 'Get time entries for a user within a date range',
+        inputSchema: {
+            workspaceId: z
+                .string()
+                .optional()
+                .describe('The ID of the workspace (optional, defaults to active workspace)'),
+            userId: z
+                .string()
+                .optional()
+                .describe(
+                    'The ID of the user to get time entries for (optional, defaults to self)'
+                ),
+            start: z.string().optional().describe('Start date (ISO 8601 format)'),
+            end: z.string().optional().describe('End date (ISO 8601 format)'),
+        },
+    },
+    async ({ workspaceId, userId, start, end }) => {
+        let targetWorkspaceId = workspaceId;
+        let targetUserId = userId;
+
+        if (!targetWorkspaceId) {
+            const currentUser = await clockifyRequest('/user', CLOCKIFY_API_KEY);
+            targetWorkspaceId = currentUser.activeWorkspace;
+            if (!targetUserId) {
+                targetUserId = currentUser.id;
+            }
+        }
+
+        let endpoint = `/workspaces/${targetWorkspaceId}/user/${targetUserId}/time-entries`;
+        const queryParams = [];
+        if (start) queryParams.push(`start=${encodeURIComponent(start)}`);
+        if (end) queryParams.push(`end=${encodeURIComponent(end)}`);
+        if (queryParams.length > 0) {
+            endpoint += `?${queryParams.join('&')}`;
+        }
+
+        const timeEntries = await clockifyRequest(endpoint, CLOCKIFY_API_KEY);
+        return {
+            content: [
+                {
+                    type: 'text',
+                    text: JSON.stringify(
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        timeEntries.map((entry: any) => ({
+                            id: entry.id,
+                            description: entry.description,
+                            projectId: entry.projectId,
+                            taskId: entry.taskId,
+                            billable: entry.billable,
+                            timeInterval: entry.timeInterval,
+                            userId: entry.userId,
+                            workspaceId: entry.workspaceId,
+                            tagIds: entry.tags,
+                            costRate: entry.costRate,
+                            hourlyRate: entry.hourlyRate,
+                            customFieldValues: entry.customFieldValues,
+                            isLocked: entry.isLocked,
+                            kioskId: entry.kioskId,
+                            type: entry.type,
+                        })),
+                        null,
+                        2
+                    ),
+                },
+            ],
+        };
+    }
+);
+
 async function main() {
     const transport = new StdioServerTransport();
     await server.connect(transport);
