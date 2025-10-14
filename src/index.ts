@@ -268,6 +268,62 @@ server.registerTool(
     }
 );
 
+// Tool: Get tasks on project
+server.registerTool(
+    'get_tasks_on_project',
+    {
+        title: 'Get Tasks on Project',
+        description: 'Get all tasks on a project',
+        inputSchema: {
+            workspaceId: z
+                .string()
+                .optional()
+                .describe('The ID of the workspace (optional, defaults to active workspace)'),
+            projectId: z.string().describe('The ID of the project to get tasks from'),
+        },
+    },
+    async ({ workspaceId, projectId }) => {
+        let targetWorkspaceId = workspaceId;
+
+        if (!targetWorkspaceId) {
+            const currentUser = await clockifyRequest('/user', CLOCKIFY_API_KEY);
+            targetWorkspaceId = currentUser.activeWorkspace;
+        }
+
+        const tasks = await clockifyRequest(
+            `/workspaces/${targetWorkspaceId}/projects/${projectId}/tasks`,
+            CLOCKIFY_API_KEY
+        );
+        return {
+            content: [
+                {
+                    type: 'text',
+                    text: JSON.stringify(
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        tasks.map((task: any) => ({
+                            id: task.id,
+                            name: task.name,
+                            status: task.status,
+                            duration: task.duration,
+                            assigneeId: task.assigneeId,
+                            assigneeIds: task.assigneeIds,
+                            billable: task.billable,
+                            budgetEstimate: task.budgetEstimate,
+                            costRate: task.costRate,
+                            estimate: task.estimate,
+                            hourlyRate: task.hourlyRate,
+                            projectId: task.projectId,
+                            userGroupIds: task.userGroupIds,
+                        })),
+                        null,
+                        2
+                    ),
+                },
+            ],
+        };
+    }
+);
+
 async function main() {
     const transport = new StdioServerTransport();
     await server.connect(transport);
