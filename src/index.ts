@@ -13,7 +13,7 @@ if (!CLOCKIFY_API_KEY) {
 
 const server = new McpServer({
     name: 'clockify-server',
-    version: '1.0.0',
+    version: '0.0.1',
 });
 
 async function clockifyRequest(

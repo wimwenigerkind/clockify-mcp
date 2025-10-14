@@ -1,6 +1,6 @@
 {
   "name": "clockify-mcp",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "A MCP Server for Clockify",
   "type": "module",
   "main": "src/index.ts",
