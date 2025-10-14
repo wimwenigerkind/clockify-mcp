@@ -398,6 +398,74 @@ server.registerTool(
     }
 );
 
+// Tool: Add time entry
+server.registerTool(
+    'add_time_entry',
+    {
+        title: 'Add Time Entry',
+        description: 'Add time entry for authenticated user',
+        inputSchema: {
+            workspaceId: z
+                .string()
+                .optional()
+                .describe('The ID of the workspace (optional, defaults to active workspace)'),
+            projectId: z.string().describe('The ID of the project to get tasks from'),
+            description: z.string().describe('Description of the time entry'),
+            start: z.string().describe('Start date (ISO 8601 format)'),
+            end: z.string().describe('End date (ISO 8601 format)'),
+            taskId: z.string().describe('The ID of the task'),
+            tagIds: z.string().array().optional().describe('Array of tag IDs'),
+        },
+    },
+    async ({ workspaceId, projectId, description, start, end, taskId, tagIds }) => {
+        let targetWorkspaceId = workspaceId;
+
+        if (!targetWorkspaceId) {
+            const currentUser = await clockifyRequest('/user', CLOCKIFY_API_KEY);
+            targetWorkspaceId = currentUser.activeWorkspace;
+        }
+
+        const entry = await clockifyRequest(
+            `/workspaces/${targetWorkspaceId}/time-entries`,
+            CLOCKIFY_API_KEY,
+            'POST',
+            {
+                description,
+                start,
+                end,
+                taskId,
+                tagIds,
+                projectId,
+            }
+        );
+        return {
+            content: [
+                {
+                    type: 'text',
+                    text: JSON.stringify(
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        {
+                            id: entry.id,
+                            description: entry.description,
+                            billable: entry.billable,
+                            customFieldValues: entry.customFieldValues,
+                            isLocked: entry.isLocked,
+                            kioskId: entry.kioskId,
+                            projectId: entry.projectId,
+                            tagIds: entry.tagIds,
+                            taskId: entry.taskId,
+                            timeInterval: entry.timeInterval,
+                            type: entry.type,
+                            userId: entry.userId,
+                            workspaceId: entry.workspaceId,
+                        }
+                    ),
+                },
+            ],
+        };
+    }
+);
+
 async function main() {
     const transport = new StdioServerTransport();
     await server.connect(transport);
