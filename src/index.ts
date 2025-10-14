@@ -16,12 +16,7 @@ const server = new McpServer({
     version: '0.0.1',
 });
 
-async function clockifyRequest(
-    endpoint: string,
-    apiKey: string,
-    method = 'GET',
-    body?: unknown
-) {
+async function clockifyRequest(endpoint: string, apiKey: string, method = 'GET', body?: unknown) {
     const response = await fetch(`${CLOCKIFY_API_BASE}${endpoint}`, {
         method,
         headers: {
@@ -67,13 +62,17 @@ server.registerTool(
             content: [
                 {
                     type: 'text',
-                    text: JSON.stringify({
-                        id: user.id,
-                        name: user.name,
-                        email: user.email,
-                        activeWorkspace: user.activeWorkspace,
-                    }, null, 2)
-                }
+                    text: JSON.stringify(
+                        {
+                            id: user.id,
+                            name: user.name,
+                            email: user.email,
+                            activeWorkspace: user.activeWorkspace,
+                        },
+                        null,
+                        2
+                    ),
+                },
             ],
         };
     }
@@ -102,8 +101,8 @@ server.registerTool(
                         })),
                         null,
                         2
-                    )
-                }
+                    ),
+                },
             ],
         };
     }
@@ -112,10 +111,10 @@ server.registerTool(
 async function main() {
     const transport = new StdioServerTransport();
     await server.connect(transport);
-    console.error("Clockify MCP Server running on stdio");
+    console.error('Clockify MCP Server running on stdio');
 }
 
 main().catch((error) => {
-    console.error("Fatal error in main():", error);
+    console.error('Fatal error in main():', error);
     process.exit(1);
 });
