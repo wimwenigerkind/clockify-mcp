@@ -216,6 +216,58 @@ server.registerTool(
     }
 );
 
+// Tool: Get projects on workspace
+server.registerTool(
+    'get_projects_on_workspace',
+    {
+        title: 'Get Projects on Workspace',
+        description:
+            'Get all projects on a workspace (defaults to active workspace if not specified)',
+        inputSchema: {
+            workspaceId: z
+                .string()
+                .optional()
+                .describe(
+                    'The ID of the workspace to get projects from (optional, defaults to active workspace)'
+                ),
+        },
+    },
+    async ({ workspaceId }) => {
+        let targetWorkspaceId = workspaceId;
+
+        if (!targetWorkspaceId) {
+            const currentUser = await clockifyRequest('/user', CLOCKIFY_API_KEY);
+            targetWorkspaceId = currentUser.activeWorkspace;
+        }
+
+        const projects = await clockifyRequest(
+            `/workspaces/${targetWorkspaceId}/projects`,
+            CLOCKIFY_API_KEY
+        );
+        return {
+            content: [
+                {
+                    type: 'text',
+                    text: JSON.stringify(
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        projects.map((project: any) => ({
+                            id: project.id,
+                            name: project.name,
+                            note: project.note,
+                            public: project.public,
+                            duration: project.duration,
+                            color: project.color,
+                            memberships: project.memberships,
+                        })),
+                        null,
+                        2
+                    ),
+                },
+            ],
+        };
+    }
+);
+
 async function main() {
     const transport = new StdioServerTransport();
     await server.connect(transport);
