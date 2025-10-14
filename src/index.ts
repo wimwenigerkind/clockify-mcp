@@ -68,7 +68,49 @@ server.registerTool(
                             name: user.name,
                             email: user.email,
                             activeWorkspace: user.activeWorkspace,
+                            profilePicture: user.profilePicture,
+                            memberships: user.memberships,
                         },
+                        null,
+                        2
+                    ),
+                },
+            ],
+        };
+    }
+);
+
+// Tool: Get workspace users
+server.registerTool(
+    'get_workspace_users',
+    {
+        title: 'Get Workspace Users',
+        description: 'Get all users in the active workspace',
+        inputSchema: {},
+    },
+    async () => {
+        // First get current user to find active workspace
+        const currentUser = await clockifyRequest('/user', CLOCKIFY_API_KEY);
+        const workspaceId = currentUser.activeWorkspace;
+
+        // Then get all users in that workspace
+        const users = await clockifyRequest(`/workspaces/${workspaceId}/users`, CLOCKIFY_API_KEY);
+
+        return {
+            content: [
+                {
+                    type: 'text',
+                    text: JSON.stringify(
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        users.map((u: any) => ({
+                            id: u.id,
+                            name: u.name,
+                            email: u.email,
+                            status: u.status,
+                            activeWorkspace: u.activeWorkspace,
+                            profilePicture: u.profilePicture,
+                            memberships: u.memberships,
+                        })),
                         null,
                         2
                     ),
