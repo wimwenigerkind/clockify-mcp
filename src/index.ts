@@ -78,6 +78,35 @@ server.registerTool(
     }
 );
 
+// Tool: Get workspaces
+server.registerTool(
+    'get_workspaces',
+    {
+        title: 'Get Workspaces',
+        description: 'Get all available workspaces for the authenticated user',
+        inputSchema: {},
+    },
+    async () => {
+        const workspaces = await clockifyRequest('/workspaces', CLOCKIFY_API_KEY);
+        return {
+            content: [
+                {
+                    type: 'text',
+                    text: JSON.stringify(
+                        workspaces.map((ws: any) => ({
+                            id: ws.id,
+                            name: ws.name,
+                            imageUrl: ws.imageUrl,
+                        })),
+                        null,
+                        2
+                    )
+                }
+            ],
+        };
+    }
+);
+
 async function main() {
     const transport = new StdioServerTransport();
     await server.connect(transport);
