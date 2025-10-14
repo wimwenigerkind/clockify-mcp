@@ -52,6 +52,31 @@ async function clockifyRequest(
     return null;
 }
 
+// Tool: Get current user
+server.registerTool(
+    'get_current_user',
+    {
+        description: 'Get information about the currently authenticated Clockify user',
+        inputSchema: {},
+    },
+    async () => {
+        const user = await clockifyRequest('/user', CLOCKIFY_API_KEY);
+        return {
+            content: [
+                {
+                    type: 'text',
+                    text: JSON.stringify({
+                        id: user.id,
+                        name: user.name,
+                        email: user.email,
+                        activeWorkspace: user.activeWorkspace,
+                    }, null, 2)
+                }
+            ],
+        };
+    }
+);
+
 const transport = new StdioServerTransport();
 await server.connect(transport);
 
