@@ -20,7 +20,7 @@ async function clockifyRequest(
     endpoint: string,
     apiKey: string,
     method = 'GET',
-    body?: any
+    body?: unknown
 ) {
     const response = await fetch(`${CLOCKIFY_API_BASE}${endpoint}`, {
         method,
@@ -38,7 +38,8 @@ async function clockifyRequest(
             if (errorBody) {
                 errorMessage += ` - ${errorBody}`;
             }
-        } catch (e) {
+        } catch {
+            // Ignore error when reading response body fails
         }
         throw new Error(errorMessage);
     }
@@ -93,6 +94,7 @@ server.registerTool(
                 {
                     type: 'text',
                     text: JSON.stringify(
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         workspaces.map((ws: any) => ({
                             id: ws.id,
                             name: ws.name,
