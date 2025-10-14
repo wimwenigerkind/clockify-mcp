@@ -7,6 +7,8 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -30,7 +32,11 @@
     "@modelcontextprotocol/sdk": "^1.20.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.37.0",
+    "@types/eslint__js": "^8.42.3",
+    "@types/node": "^24.7.2",
+    "eslint": "^9.37.0",
     "typescript": "^5.9.3",
-    "@types/node": "^24.7.2"
+    "typescript-eslint": "^8.46.1"
   }
 }
