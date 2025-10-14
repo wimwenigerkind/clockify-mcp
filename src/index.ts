@@ -14,3 +14,39 @@ const server = new McpServer({
     name: 'clockify-server',
     version: '1.0.0',
 });
+
+async function clockifyRequest(
+    endpoint: string,
+    apiKey: string,
+    method = 'GET',
+    body?: any
+) {
+    const response = await fetch(`${CLOCKIFY_API_BASE}${endpoint}`, {
+        method,
+        headers: {
+            'X-Api-Key': apiKey,
+            'Content-Type': 'application/json',
+        },
+        body: body ? JSON.stringify(body) : undefined,
+    });
+
+    if (!response.ok) {
+        let errorMessage = `Clockify API error: ${response.status} ${response.statusText}`;
+        try {
+            const errorBody = await response.text();
+            if (errorBody) {
+                errorMessage += ` - ${errorBody}`;
+            }
+        } catch (e) {
+        }
+        throw new Error(errorMessage);
+    }
+
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+        const text = await response.text();
+        return text ? JSON.parse(text) : null;
+    }
+
+    return null;
+}
