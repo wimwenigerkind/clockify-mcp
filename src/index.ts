@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 
 const CLOCKIFY_API_BASE = 'https://api.clockify.me/api/v1';
 const CLOCKIFY_API_KEY = process.env.CLOCKIFY_API_KEY;
@@ -50,3 +51,8 @@ async function clockifyRequest(
 
     return null;
 }
+
+const transport = new StdioServerTransport();
+await server.connect(transport);
+
+console.error('Clockify MCP Server running on stdio');
