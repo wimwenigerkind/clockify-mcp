@@ -163,6 +163,59 @@ server.registerTool(
     }
 );
 
+// Tool: Get clients on workspace
+server.registerTool(
+    'get_clients_on_workspace',
+    {
+        title: 'Get Clients on Workspace',
+        description:
+            'Get all clients on a workspace (defaults to active workspace if not specified)',
+        inputSchema: {
+            workspaceId: z
+                .string()
+                .optional()
+                .describe(
+                    'The ID of the workspace to get clients from (optional, defaults to active workspace)'
+                ),
+        },
+    },
+    async ({ workspaceId }) => {
+        let targetWorkspaceId = workspaceId;
+
+        if (!targetWorkspaceId) {
+            const currentUser = await clockifyRequest('/user', CLOCKIFY_API_KEY);
+            targetWorkspaceId = currentUser.activeWorkspace;
+        }
+
+        const clients = await clockifyRequest(
+            `/workspaces/${targetWorkspaceId}/clients`,
+            CLOCKIFY_API_KEY
+        );
+        return {
+            content: [
+                {
+                    type: 'text',
+                    text: JSON.stringify(
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        clients.map((client: any) => ({
+                            id: client.id,
+                            name: client.name,
+                            address: client.address,
+                            email: client.email,
+                            note: client.note,
+                            archived: client.archived,
+                            currencyCode: client.currencyCode,
+                            currencyId: client.currencyId,
+                        })),
+                        null,
+                        2
+                    ),
+                },
+            ],
+        };
+    }
+);
+
 async function main() {
     const transport = new StdioServerTransport();
     await server.connect(transport);
