@@ -20,6 +20,17 @@ interface ClockifyWorkspace {
     imageUrl?: string;
 }
 
+interface ClockifyClient {
+    id: string;
+    name: string;
+    address?: string;
+    email?: string;
+    note?: string;
+    archived: boolean;
+    currencyCode?: string;
+    currencyId?: string;
+}
+
 const CLOCKIFY_API_BASE = 'https://api.clockify.me/api/v1';
 const CLOCKIFY_API_KEY = process.env.CLOCKIFY_API_KEY;
 
@@ -210,8 +221,7 @@ server.registerTool(
                 {
                     type: 'text',
                     text: JSON.stringify(
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        clients.map((client: any) => ({
+                        clients.map((client: ClockifyClient) => ({
                             id: client.id,
                             name: client.name,
                             address: client.address,
