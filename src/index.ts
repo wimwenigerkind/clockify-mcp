@@ -14,6 +14,12 @@ interface ClockifyUser {
     status?: string;
 }
 
+interface ClockifyWorkspace {
+    id: string;
+    name: string;
+    imageUrl?: string;
+}
+
 const CLOCKIFY_API_BASE = 'https://api.clockify.me/api/v1';
 const CLOCKIFY_API_KEY = process.env.CLOCKIFY_API_KEY;
 
@@ -157,8 +163,7 @@ server.registerTool(
                 {
                     type: 'text',
                     text: JSON.stringify(
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        workspaces.map((ws: any) => ({
+                        workspaces.map((ws: ClockifyWorkspace) => ({
                             id: ws.id,
                             name: ws.name,
                             imageUrl: ws.imageUrl,
