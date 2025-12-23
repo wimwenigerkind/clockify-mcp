@@ -4,6 +4,16 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
 
+interface ClockifyUser {
+    id: string;
+    name: string;
+    email: string;
+    activeWorkspace: string;
+    profilePicture?: string;
+    memberships: unknown[];
+    status?: string;
+}
+
 const CLOCKIFY_API_BASE = 'https://api.clockify.me/api/v1';
 const CLOCKIFY_API_KEY = process.env.CLOCKIFY_API_KEY;
 
@@ -114,8 +124,7 @@ server.registerTool(
                 {
                     type: 'text',
                     text: JSON.stringify(
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        users.map((u: any) => ({
+                        users.map((u: ClockifyUser) => ({
                             id: u.id,
                             name: u.name,
                             email: u.email,
