@@ -446,7 +446,6 @@ server.registerTool(
                 {
                     type: 'text',
                     text: JSON.stringify(
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         {
                             id: entry.id,
                             description: entry.description,
