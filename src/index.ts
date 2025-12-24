@@ -3,33 +3,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
-
-interface ClockifyUser {
-    id: string;
-    name: string;
-    email: string;
-    activeWorkspace: string;
-    profilePicture?: string;
-    memberships: unknown[];
-    status?: string;
-}
-
-interface ClockifyWorkspace {
-    id: string;
-    name: string;
-    imageUrl?: string;
-}
-
-interface ClockifyClient {
-    id: string;
-    name: string;
-    address?: string;
-    email?: string;
-    note?: string;
-    archived: boolean;
-    currencyCode?: string;
-    currencyId?: string;
-}
+import {ClockifyClient, ClockifyUser, ClockifyWorkspace} from "./types/clockify.js";
 
 const CLOCKIFY_API_BASE = 'https://api.clockify.me/api/v1';
 const CLOCKIFY_API_KEY = process.env.CLOCKIFY_API_KEY;
