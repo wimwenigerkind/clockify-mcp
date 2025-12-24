@@ -24,3 +24,13 @@ export interface ClockifyClient {
     currencyCode?: string;
     currencyId?: string;
 }
+
+export interface ClockifyProject {
+    id: string;
+    name: string;
+    note?: string;
+    public: boolean;
+    duration?: string;
+    color?: string;
+    memberships: unknown[];
+}
