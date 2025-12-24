@@ -34,3 +34,19 @@ export interface ClockifyProject {
     color?: string;
     memberships: unknown[];
 }
+
+export interface ClockifyTask {
+    id: string;
+    name: string;
+    status: string;
+    duration?: string;
+    assigneeId?: string;
+    assigneeIds?: string[];
+    billable: boolean;
+    budgetEstimate?: unknown;
+    costRate?: unknown;
+    estimate?: string;
+    hourlyRate?: unknown;
+    projectId: string;
+    userGroupIds?: string[];
+}

@@ -3,7 +3,7 @@
 import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';
 import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';
 import {z} from 'zod';
-import {ClockifyClient, ClockifyProject, ClockifyUser, ClockifyWorkspace} from './types/clockify.js';
+import {ClockifyClient, ClockifyProject, ClockifyTask, ClockifyUser, ClockifyWorkspace} from './types/clockify.js';
 
 const CLOCKIFY_API_BASE = 'https://api.clockify.me/api/v1';
 const CLOCKIFY_API_KEY = process.env.CLOCKIFY_API_KEY;
@@ -297,8 +297,7 @@ server.registerTool(
                 {
                     type: 'text',
                     text: JSON.stringify(
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        tasks.map((task: any) => ({
+                        tasks.map((task: ClockifyTask) => ({
                             id: task.id,
                             name: task.name,
                             status: task.status,
