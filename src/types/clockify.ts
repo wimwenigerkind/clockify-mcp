@@ -1,4 +1,4 @@
-export interface ClockifyUser {
+interface ClockifyUser {
     id: string;
     name: string;
     email: string;
@@ -8,13 +8,13 @@ export interface ClockifyUser {
     status?: string;
 }
 
-export interface ClockifyWorkspace {
+interface ClockifyWorkspace {
     id: string;
     name: string;
     imageUrl?: string;
 }
 
-export interface ClockifyClient {
+interface ClockifyClient {
     id: string;
     name: string;
     address?: string;
@@ -25,7 +25,7 @@ export interface ClockifyClient {
     currencyId?: string;
 }
 
-export interface ClockifyProject {
+interface ClockifyProject {
     id: string;
     name: string;
     note?: string;
@@ -35,7 +35,7 @@ export interface ClockifyProject {
     memberships: unknown[];
 }
 
-export interface ClockifyTask {
+interface ClockifyTask {
     id: string;
     name: string;
     status: string;
@@ -51,7 +51,7 @@ export interface ClockifyTask {
     userGroupIds?: string[];
 }
 
-export interface ClockifyTimeEntry {
+interface ClockifyTimeEntry {
     id: string;
     description: string;
     projectId?: string;
@@ -72,3 +72,5 @@ export interface ClockifyTimeEntry {
     kioskId?: string;
     type: string;
 }
+
+export {ClockifyUser, ClockifyWorkspace, ClockifyClient, ClockifyProject, ClockifyTask, ClockifyTimeEntry}
