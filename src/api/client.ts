@@ -1,4 +1,4 @@
-import {CLOCKIFY_API_BASE_URL, CLOCKIFY_API_KEY} from "../index.js";
+import { CLOCKIFY_API_BASE_URL, CLOCKIFY_API_KEY } from '../index.js';
 
 export async function clockifyRequest(endpoint: string, method = 'GET', body?: unknown) {
     if (!CLOCKIFY_API_KEY) {

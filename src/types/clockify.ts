@@ -73,4 +73,11 @@ interface ClockifyTimeEntry {
     type: string;
 }
 
-export {ClockifyUser, ClockifyWorkspace, ClockifyClient, ClockifyProject, ClockifyTask, ClockifyTimeEntry}
+export {
+    ClockifyUser,
+    ClockifyWorkspace,
+    ClockifyClient,
+    ClockifyProject,
+    ClockifyTask,
+    ClockifyTimeEntry,
+};

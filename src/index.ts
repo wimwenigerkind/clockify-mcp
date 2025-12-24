@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';
-import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';
-import {z} from 'zod';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { z } from 'zod';
 import {
     ClockifyClient,
     ClockifyProject,
@@ -11,10 +11,11 @@ import {
     ClockifyUser,
     ClockifyWorkspace,
 } from './types/clockify.js';
-import {clockifyRequest} from "./api/client.js";
+import { clockifyRequest } from './api/client.js';
 
 export const CLOCKIFY_API_KEY = process.env.CLOCKIFY_API_KEY;
-export const CLOCKIFY_API_BASE_URL = (process.env.CLOCKIFY_API_BASE_URL ?? 'https://api.clockify.me/api/v1') as string;
+export const CLOCKIFY_API_BASE_URL = (process.env.CLOCKIFY_API_BASE_URL ??
+    'https://api.clockify.me/api/v1') as string;
 const JSON_INDENT_SPACES = 2;
 
 if (!CLOCKIFY_API_KEY) {
@@ -74,7 +75,7 @@ server.registerTool(
                 ),
         },
     },
-    async ({workspaceId}) => {
+    async ({ workspaceId }) => {
         let targetWorkspaceId = workspaceId;
 
         if (!targetWorkspaceId) {
@@ -82,9 +83,7 @@ server.registerTool(
             targetWorkspaceId = currentUser.activeWorkspace;
         }
 
-        const users = await clockifyRequest(
-            `/workspaces/${targetWorkspaceId}/users`
-        );
+        const users = await clockifyRequest(`/workspaces/${targetWorkspaceId}/users`);
 
         return {
             content: [
@@ -154,7 +153,7 @@ server.registerTool(
                 ),
         },
     },
-    async ({workspaceId}) => {
+    async ({ workspaceId }) => {
         let targetWorkspaceId = workspaceId;
 
         if (!targetWorkspaceId) {
@@ -162,9 +161,7 @@ server.registerTool(
             targetWorkspaceId = currentUser.activeWorkspace;
         }
 
-        const clients = await clockifyRequest(
-            `/workspaces/${targetWorkspaceId}/clients`
-        );
+        const clients = await clockifyRequest(`/workspaces/${targetWorkspaceId}/clients`);
         return {
             content: [
                 {
@@ -205,7 +202,7 @@ server.registerTool(
                 ),
         },
     },
-    async ({workspaceId}) => {
+    async ({ workspaceId }) => {
         let targetWorkspaceId = workspaceId;
 
         if (!targetWorkspaceId) {
@@ -213,9 +210,7 @@ server.registerTool(
             targetWorkspaceId = currentUser.activeWorkspace;
         }
 
-        const projects = await clockifyRequest(
-            `/workspaces/${targetWorkspaceId}/projects`
-        );
+        const projects = await clockifyRequest(`/workspaces/${targetWorkspaceId}/projects`);
         return {
             content: [
                 {
@@ -253,7 +248,7 @@ server.registerTool(
             projectId: z.string().describe('The ID of the project to get tasks from'),
         },
     },
-    async ({workspaceId, projectId}) => {
+    async ({ workspaceId, projectId }) => {
         let targetWorkspaceId = workspaceId;
 
         if (!targetWorkspaceId) {
@@ -314,7 +309,7 @@ server.registerTool(
             end: z.string().optional().describe('End date (ISO 8601 format)'),
         },
     },
-    async ({workspaceId, userId, start, end}) => {
+    async ({ workspaceId, userId, start, end }) => {
         let targetWorkspaceId = workspaceId;
         let targetUserId = userId;
 
@@ -385,7 +380,7 @@ server.registerTool(
             tagIds: z.string().array().optional().describe('Array of tag IDs'),
         },
     },
-    async ({workspaceId, projectId, description, start, end, taskId, tagIds}) => {
+    async ({ workspaceId, projectId, description, start, end, taskId, tagIds }) => {
         let targetWorkspaceId = workspaceId;
 
         if (!targetWorkspaceId) {
