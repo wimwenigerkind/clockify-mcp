@@ -50,3 +50,25 @@ export interface ClockifyTask {
     projectId: string;
     userGroupIds?: string[];
 }
+
+export interface ClockifyTimeEntry {
+    id: string;
+    description: string;
+    projectId?: string;
+    taskId?: string;
+    billable: boolean;
+    timeInterval: {
+        start: string;
+        end: string;
+    };
+    userId: string;
+    workspaceId: string;
+    tags?: string[];
+    tagIds?: string[];
+    costRate?: unknown;
+    hourlyRate?: unknown;
+    customFieldValues?: unknown[];
+    isLocked: boolean;
+    kioskId?: string;
+    type: string;
+}
