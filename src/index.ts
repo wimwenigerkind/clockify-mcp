@@ -85,15 +85,17 @@ server.registerTool(
 
         const users = await clockifyRequest(`/workspaces/${targetWorkspaceId}/users`);
 
-        return formatJsonResponse(users.map((u: ClockifyUser) => ({
-            id: u.id,
-            name: u.name,
-            email: u.email,
-            status: u.status,
-            activeWorkspace: u.activeWorkspace,
-            profilePicture: u.profilePicture,
-            memberships: u.memberships,
-        })));
+        return formatJsonResponse(
+            users.map((u: ClockifyUser) => ({
+                id: u.id,
+                name: u.name,
+                email: u.email,
+                status: u.status,
+                activeWorkspace: u.activeWorkspace,
+                profilePicture: u.profilePicture,
+                memberships: u.memberships,
+            }))
+        );
     }
 );
 
@@ -108,11 +110,13 @@ server.registerTool(
     async () => {
         const workspaces = await clockifyRequest('/workspaces');
 
-        return formatJsonResponse(workspaces.map((ws: ClockifyWorkspace) => ({
-            id: ws.id,
-            name: ws.name,
-            imageUrl: ws.imageUrl,
-        })));
+        return formatJsonResponse(
+            workspaces.map((ws: ClockifyWorkspace) => ({
+                id: ws.id,
+                name: ws.name,
+                imageUrl: ws.imageUrl,
+            }))
+        );
     }
 );
 
@@ -142,16 +146,18 @@ server.registerTool(
 
         const clients = await clockifyRequest(`/workspaces/${targetWorkspaceId}/clients`);
 
-        return formatJsonResponse(clients.map((client: ClockifyClient) => ({
-            id: client.id,
-            name: client.name,
-            address: client.address,
-            email: client.email,
-            note: client.note,
-            archived: client.archived,
-            currencyCode: client.currencyCode,
-            currencyId: client.currencyId,
-        })));
+        return formatJsonResponse(
+            clients.map((client: ClockifyClient) => ({
+                id: client.id,
+                name: client.name,
+                address: client.address,
+                email: client.email,
+                note: client.note,
+                archived: client.archived,
+                currencyCode: client.currencyCode,
+                currencyId: client.currencyId,
+            }))
+        );
     }
 );
 
@@ -181,15 +187,17 @@ server.registerTool(
 
         const projects = await clockifyRequest(`/workspaces/${targetWorkspaceId}/projects`);
 
-        return formatJsonResponse(projects.map((project: ClockifyProject) => ({
-            id: project.id,
-            name: project.name,
-            note: project.note,
-            public: project.public,
-            duration: project.duration,
-            color: project.color,
-            memberships: project.memberships,
-        })));
+        return formatJsonResponse(
+            projects.map((project: ClockifyProject) => ({
+                id: project.id,
+                name: project.name,
+                note: project.note,
+                public: project.public,
+                duration: project.duration,
+                color: project.color,
+                memberships: project.memberships,
+            }))
+        );
     }
 );
 
@@ -219,21 +227,23 @@ server.registerTool(
             `/workspaces/${targetWorkspaceId}/projects/${projectId}/tasks`
         );
 
-        return formatJsonResponse(tasks.map((task: ClockifyTask) => ({
-            id: task.id,
-            name: task.name,
-            status: task.status,
-            duration: task.duration,
-            assigneeId: task.assigneeId,
-            assigneeIds: task.assigneeIds,
-            billable: task.billable,
-            budgetEstimate: task.budgetEstimate,
-            costRate: task.costRate,
-            estimate: task.estimate,
-            hourlyRate: task.hourlyRate,
-            projectId: task.projectId,
-            userGroupIds: task.userGroupIds,
-        })));
+        return formatJsonResponse(
+            tasks.map((task: ClockifyTask) => ({
+                id: task.id,
+                name: task.name,
+                status: task.status,
+                duration: task.duration,
+                assigneeId: task.assigneeId,
+                assigneeIds: task.assigneeIds,
+                billable: task.billable,
+                budgetEstimate: task.budgetEstimate,
+                costRate: task.costRate,
+                estimate: task.estimate,
+                hourlyRate: task.hourlyRate,
+                projectId: task.projectId,
+                userGroupIds: task.userGroupIds,
+            }))
+        );
     }
 );
 
@@ -280,23 +290,25 @@ server.registerTool(
 
         const timeEntries = await clockifyRequest(endpoint);
 
-        return formatJsonResponse(timeEntries.map((entry: ClockifyTimeEntry) => ({
-            id: entry.id,
-            description: entry.description,
-            projectId: entry.projectId,
-            taskId: entry.taskId,
-            billable: entry.billable,
-            timeInterval: entry.timeInterval,
-            userId: entry.userId,
-            workspaceId: entry.workspaceId,
-            tagIds: entry.tags,
-            costRate: entry.costRate,
-            hourlyRate: entry.hourlyRate,
-            customFieldValues: entry.customFieldValues,
-            isLocked: entry.isLocked,
-            kioskId: entry.kioskId,
-            type: entry.type,
-        })));
+        return formatJsonResponse(
+            timeEntries.map((entry: ClockifyTimeEntry) => ({
+                id: entry.id,
+                description: entry.description,
+                projectId: entry.projectId,
+                taskId: entry.taskId,
+                billable: entry.billable,
+                timeInterval: entry.timeInterval,
+                userId: entry.userId,
+                workspaceId: entry.workspaceId,
+                tagIds: entry.tags,
+                costRate: entry.costRate,
+                hourlyRate: entry.hourlyRate,
+                customFieldValues: entry.customFieldValues,
+                isLocked: entry.isLocked,
+                kioskId: entry.kioskId,
+                type: entry.type,
+            }))
+        );
     }
 );
 
