@@ -1,8 +1,8 @@
 import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';
 import {ClockifyService} from '../api/clockify-service.js';
-import {formatJsonResponse} from "../utils/response-formatters.js";
-import {ClockifyUser} from "../types/clockify.js";
-import {z} from "zod";
+import {formatJsonResponse} from '../utils/response-formatters.js';
+import {ClockifyUser} from '../types/clockify.js';
+import {z} from 'zod';
 
 const clockifyService = new ClockifyService();
 
@@ -46,7 +46,8 @@ export function registerUserTools(server: McpServer) {
         'get_workspace_users',
         {
             title: 'Get Workspace Users',
-            description: 'Get all users in a workspace (defaults to active workspace if not specified)',
+            description:
+                'Get all users in a workspace (defaults to active workspace if not specified)',
             inputSchema: {
                 workspaceId: z
                     .string()
@@ -58,7 +59,8 @@ export function registerUserTools(server: McpServer) {
         },
         async ({workspaceId}) => {
             try {
-                const targetWorkspaceId = workspaceId ?? (await clockifyService.getActiveWorkspaceId());
+                const targetWorkspaceId =
+                    workspaceId ?? (await clockifyService.getActiveWorkspaceId());
                 const users = await clockifyService.getWorkspaceUsers(targetWorkspaceId);
 
                 return formatJsonResponse(

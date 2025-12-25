@@ -1,8 +1,8 @@
 import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';
 import {ClockifyService} from '../api/clockify-service.js';
-import {formatJsonResponse} from "../utils/response-formatters.js";
-import {z} from "zod";
-import {ClockifyProject, ClockifyTask} from "../types/clockify.js";
+import {formatJsonResponse} from '../utils/response-formatters.js';
+import {z} from 'zod';
+import {ClockifyProject, ClockifyTask} from '../types/clockify.js';
 
 const clockifyService = new ClockifyService();
 
@@ -25,7 +25,8 @@ export function registerProjectTools(server: McpServer) {
         },
         async ({workspaceId}) => {
             try {
-                const targetWorkspaceId = workspaceId ?? (await clockifyService.getActiveWorkspaceId());
+                const targetWorkspaceId =
+                    workspaceId ?? (await clockifyService.getActiveWorkspaceId());
                 const projects = await clockifyService.getWorkspaceProjects(targetWorkspaceId);
 
                 return formatJsonResponse(
@@ -53,7 +54,6 @@ export function registerProjectTools(server: McpServer) {
         }
     );
 
-
     // Tool: Get tasks on project
     server.registerTool(
         'get_tasks_on_project',
@@ -70,7 +70,8 @@ export function registerProjectTools(server: McpServer) {
         },
         async ({workspaceId, projectId}) => {
             try {
-                const targetWorkspaceId = workspaceId ?? (await clockifyService.getActiveWorkspaceId());
+                const targetWorkspaceId =
+                    workspaceId ?? (await clockifyService.getActiveWorkspaceId());
                 const tasks = await clockifyService.getProjectTasks(targetWorkspaceId, projectId);
 
                 return formatJsonResponse(

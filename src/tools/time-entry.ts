@@ -38,7 +38,8 @@ export function registerTimeEntryTools(server: McpServer) {
         },
         async ({workspaceId, userId, start, end}) => {
             try {
-                const targetWorkspaceId = workspaceId ?? (await clockifyService.getActiveWorkspaceId());
+                const targetWorkspaceId =
+                    workspaceId ?? (await clockifyService.getActiveWorkspaceId());
                 const targetUserId = userId ?? (await clockifyService.getCurrentUser()).id;
 
                 const queryString = buildQueryString({start, end});
@@ -102,7 +103,8 @@ export function registerTimeEntryTools(server: McpServer) {
         },
         async ({workspaceId, projectId, description, start, end, taskId, tagIds}) => {
             try {
-                const targetWorkspaceId = workspaceId ?? (await clockifyService.getActiveWorkspaceId());
+                const targetWorkspaceId =
+                    workspaceId ?? (await clockifyService.getActiveWorkspaceId());
 
                 const entry = await clockifyService.addTimeEntry(targetWorkspaceId, {
                     description,

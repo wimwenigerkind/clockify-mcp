@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import {registerWorkspaceTools} from "./tools/workspace.js";
-import {registerUserTools} from "./tools/user.js";
-import {registerClientTools} from "./tools/client.js";
-import {registerProjectTools} from "./tools/project.js";
-import {registerTimeEntryTools} from "./tools/time-entry.js";
+import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';
+import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';
+import {registerWorkspaceTools} from './tools/workspace.js';
+import {registerUserTools} from './tools/user.js';
+import {registerClientTools} from './tools/client.js';
+import {registerProjectTools} from './tools/project.js';
+import {registerTimeEntryTools} from './tools/time-entry.js';
 
 export const CLOCKIFY_API_KEY = process.env.CLOCKIFY_API_KEY;
 export const CLOCKIFY_API_BASE_URL = (process.env.CLOCKIFY_API_BASE_URL ??

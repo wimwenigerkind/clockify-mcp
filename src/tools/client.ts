@@ -1,8 +1,8 @@
 import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';
 import {ClockifyService} from '../api/clockify-service.js';
-import {formatJsonResponse} from "../utils/response-formatters.js";
-import {z} from "zod";
-import {ClockifyClient} from "../types/clockify.js";
+import {formatJsonResponse} from '../utils/response-formatters.js';
+import {z} from 'zod';
+import {ClockifyClient} from '../types/clockify.js';
 
 const clockifyService = new ClockifyService();
 
@@ -25,7 +25,8 @@ export function registerClientTools(server: McpServer) {
         },
         async ({workspaceId}) => {
             try {
-                const targetWorkspaceId = workspaceId ?? (await clockifyService.getActiveWorkspaceId());
+                const targetWorkspaceId =
+                    workspaceId ?? (await clockifyService.getActiveWorkspaceId());
                 const clients = await clockifyService.getWorkspaceClients(targetWorkspaceId);
 
                 return formatJsonResponse(
