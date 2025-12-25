@@ -10,7 +10,7 @@ import {
     ClockifyTimeEntry,
 } from './types/clockify.js';
 import { clockifyRequest } from './api/client.js';
-import {registerWorkspaceTools} from "./tools/workspace-tools.js";
+import {registerWorkspaceTools} from "./tools/workspace.js";
 import {formatJsonResponse} from "./utils/response-formatters.js";
 
 export const CLOCKIFY_API_KEY = process.env.CLOCKIFY_API_KEY;
