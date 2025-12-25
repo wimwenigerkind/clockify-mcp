@@ -2,6 +2,7 @@ import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';
 import {ClockifyService} from '../api/clockify-service.js';
 import {formatJsonResponse} from "../utils/response-formatters.js";
 import {ClockifyUser} from "../types/clockify.js";
+import {z} from "zod";
 
 const clockifyService = new ClockifyService();
 
