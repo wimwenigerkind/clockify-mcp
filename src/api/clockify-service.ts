@@ -14,6 +14,10 @@ export class ClockifyService {
         return clockifyRequest('/user');
     }
 
+    async getUserProfile(workspaceId: string, userId: string): Promise<ClockifyUser> {
+        return clockifyRequest(`/workspaces/${workspaceId}/member-profile/${userId}`);
+    }
+
     // Workspace methods
     async getWorkspace(workspaceId: string): Promise<ClockifyWorkspace> {
         return clockifyRequest(`/workspaces/${workspaceId}`);

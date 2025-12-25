@@ -87,4 +87,55 @@ export function registerUserTools(server: McpServer) {
             }
         }
     );
+
+    // Tool: Get User Profile
+    server.registerTool(
+        'get_user_profile',
+        {
+            title: 'Get User Profile',
+            description: 'Get User Profile Info',
+            inputSchema: {
+                workspaceId: z
+                    .string()
+                    .optional()
+                    .describe(
+                        'The ID of the workspace to get users from (optional, defaults to active workspace)'
+                    ),
+                userId: z
+                    .string()
+                    .optional()
+                    .describe(
+                        'The ID of the user to get profile from (optional, defaults to current user)'
+                    ),
+            },
+        },
+        async ({workspaceId, userId}) => {
+            try {
+                const targetWorkspaceId =
+                    workspaceId ?? (await clockifyService.getActiveWorkspaceId());
+                const targetUserId = userId ?? (await clockifyService.getCurrentUser()).id;
+
+                const user = await clockifyService.getUserProfile(targetWorkspaceId, targetUserId);
+
+                return formatJsonResponse({
+                    id: user.id,
+                    name: user.name,
+                    email: user.email,
+                    activeWorkspace: user.activeWorkspace,
+                    profilePicture: user.profilePicture,
+                    memberships: user.memberships,
+                });
+            } catch (error) {
+                return {
+                    isError: true,
+                    content: [
+                        {
+                            type: 'text' as const,
+                            text: `Failed to fetch user profile: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                        },
+                    ],
+                };
+            }
+        }
+    );
 }
