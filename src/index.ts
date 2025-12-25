@@ -4,7 +4,6 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
 import {
-    ClockifyClient,
     ClockifyProject,
     ClockifyTask,
     ClockifyTimeEntry,
@@ -13,6 +12,7 @@ import { clockifyRequest } from './api/client.js';
 import {registerWorkspaceTools} from "./tools/workspace.js";
 import {formatJsonResponse} from "./utils/response-formatters.js";
 import {registerUserTools} from "./tools/user.js";
+import {registerClientTools} from "./tools/client.js";
 
 export const CLOCKIFY_API_KEY = process.env.CLOCKIFY_API_KEY;
 export const CLOCKIFY_API_BASE_URL = (process.env.CLOCKIFY_API_BASE_URL ??
@@ -31,47 +31,7 @@ const server = new McpServer({
 
 registerUserTools(server);
 registerWorkspaceTools(server);
-
-// Tool: Get clients on workspace
-server.registerTool(
-    'get_clients_on_workspace',
-    {
-        title: 'Get Clients on Workspace',
-        description:
-            'Get all clients on a workspace (defaults to active workspace if not specified)',
-        inputSchema: {
-            workspaceId: z
-                .string()
-                .optional()
-                .describe(
-                    'The ID of the workspace to get clients from (optional, defaults to active workspace)'
-                ),
-        },
-    },
-    async ({ workspaceId }) => {
-        let targetWorkspaceId = workspaceId;
-
-        if (!targetWorkspaceId) {
-            const currentUser = await clockifyRequest('/user');
-            targetWorkspaceId = currentUser.activeWorkspace;
-        }
-
-        const clients = await clockifyRequest(`/workspaces/${targetWorkspaceId}/clients`);
-
-        return formatJsonResponse(
-            clients.map((client: ClockifyClient) => ({
-                id: client.id,
-                name: client.name,
-                address: client.address,
-                email: client.email,
-                note: client.note,
-                archived: client.archived,
-                currencyCode: client.currencyCode,
-                currencyId: client.currencyId,
-            }))
-        );
-    }
-);
+registerClientTools(server);
 
 // Tool: Get projects on workspace
 server.registerTool(
