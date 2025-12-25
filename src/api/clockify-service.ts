@@ -78,4 +78,15 @@ export class ClockifyService {
     ): Promise<ClockifyTimeEntry> {
         return clockifyRequest(`/workspaces/${workspaceId}/time-entries`, 'POST', entry);
     }
+
+    async duplicateTimeEntry(
+        workspaceId: string,
+        userId: string,
+        id: string
+    ): Promise<ClockifyTimeEntry> {
+        return clockifyRequest(
+            `/workspaces/${workspaceId}/user/${userId}/time-entries/${id}/duplicate`,
+            'POST'
+        );
+    }
 }

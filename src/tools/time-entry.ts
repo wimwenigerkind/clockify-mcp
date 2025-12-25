@@ -143,4 +143,65 @@ export function registerTimeEntryTools(server: McpServer) {
             }
         }
     );
+
+    // Tool: Duplicate time entry
+    server.registerTool(
+        'duplicate_time_entry',
+        {
+            title: 'Duplicate Time Entry',
+            description: 'Duplicate time entry for authenticated user',
+            inputSchema: {
+                workspaceId: z
+                    .string()
+                    .optional()
+                    .describe('The ID of the workspace (optional, defaults to active workspace)'),
+                userId: z
+                    .string()
+                    .optional()
+                    .describe(
+                        'The ID of the user to get time entries for (optional, defaults to self)'
+                    ),
+                timeEntryId: z.string().describe('The ID of the time entry'),
+            },
+        },
+        async ({workspaceId, userId, timeEntryId}) => {
+            try {
+                const targetWorkspaceId =
+                    workspaceId ?? (await clockifyService.getActiveWorkspaceId());
+                const targetUserId = userId ?? (await clockifyService.getCurrentUser()).id;
+
+                const entry = await clockifyService.duplicateTimeEntry(
+                    targetWorkspaceId,
+                    targetUserId,
+                    timeEntryId
+                );
+
+                return formatJsonResponse({
+                    id: entry.id,
+                    description: entry.description,
+                    billable: entry.billable,
+                    customFieldValues: entry.customFieldValues,
+                    isLocked: entry.isLocked,
+                    kioskId: entry.kioskId,
+                    projectId: entry.projectId,
+                    tagIds: entry.tagIds,
+                    taskId: entry.taskId,
+                    timeInterval: entry.timeInterval,
+                    type: entry.type,
+                    userId: entry.userId,
+                    workspaceId: entry.workspaceId,
+                });
+            } catch (error) {
+                return {
+                    isError: true,
+                    content: [
+                        {
+                            type: 'text' as const,
+                            text: `Failed to duplicate time entry: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                        },
+                    ],
+                };
+            }
+        }
+    );
 }
