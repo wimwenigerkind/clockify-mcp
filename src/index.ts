@@ -12,6 +12,7 @@ import {
 import { clockifyRequest } from './api/client.js';
 import {registerWorkspaceTools} from "./tools/workspace.js";
 import {formatJsonResponse} from "./utils/response-formatters.js";
+import {registerUserTools} from "./tools/user.js";
 
 export const CLOCKIFY_API_KEY = process.env.CLOCKIFY_API_KEY;
 export const CLOCKIFY_API_BASE_URL = (process.env.CLOCKIFY_API_BASE_URL ??
@@ -28,28 +29,8 @@ const server = new McpServer({
     version: '0.0.1',
 });
 
+registerUserTools(server);
 registerWorkspaceTools(server);
-
-// Tool: Get current user
-server.registerTool(
-    'get_current_user',
-    {
-        title: 'Get Current User',
-        description: 'Get information about the currently authenticated Clockify user',
-        inputSchema: {},
-    },
-    async () => {
-        const user = await clockifyRequest('/user');
-        return formatJsonResponse({
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            activeWorkspace: user.activeWorkspace,
-            profilePicture: user.profilePicture,
-            memberships: user.memberships,
-        });
-    }
-);
 
 // Tool: Get clients on workspace
 server.registerTool(
