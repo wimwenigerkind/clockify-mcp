@@ -1,11 +1,20 @@
-import {ClockifyClient, ClockifyProject, ClockifyTask, ClockifyUser, ClockifyWorkspace} from "../types/clockify.js";
-import {clockifyRequest} from "./client.js";
+import {
+    ClockifyClient,
+    ClockifyProject,
+    ClockifyTask,
+    ClockifyTimeEntry,
+    ClockifyUser,
+    ClockifyWorkspace,
+} from '../types/clockify.js';
+import {clockifyRequest} from './client.js';
 
 export class ClockifyService {
+    // User methods
     async getCurrentUser(): Promise<ClockifyUser> {
         return clockifyRequest('/user');
     }
 
+    // Workspace methods
     async getWorkspace(workspaceId: string): Promise<ClockifyWorkspace> {
         return clockifyRequest(`/workspaces/${workspaceId}`);
     }
@@ -28,15 +37,41 @@ export class ClockifyService {
         return clockifyRequest(`/workspaces/${workspaceId}/users`);
     }
 
+    // Client methods
     async getWorkspaceClients(workspaceId: string): Promise<ClockifyClient[]> {
         return clockifyRequest(`/workspaces/${workspaceId}/clients`);
     }
 
+    // Project methods
     async getWorkspaceProjects(workspaceId: string): Promise<ClockifyProject[]> {
         return clockifyRequest(`/workspaces/${workspaceId}/projects`);
     }
 
     async getProjectTasks(workspaceId: string, projectId: string): Promise<ClockifyTask[]> {
         return clockifyRequest(`/workspaces/${workspaceId}/projects/${projectId}/tasks`);
+    }
+
+    // Time entry methods
+    async getUserTimeEntries(
+        workspaceId: string,
+        userId: string,
+        queryString: string = ''
+    ): Promise<ClockifyTimeEntry[]> {
+        const endpoint = `/workspaces/${workspaceId}/user/${userId}/time-entries${queryString}`;
+        return clockifyRequest(endpoint);
+    }
+
+    async addTimeEntry(
+        workspaceId: string,
+        entry: {
+            description: string;
+            start: string;
+            end: string;
+            projectId: string;
+            taskId?: string;
+            tagIds?: string[];
+        }
+    ): Promise<ClockifyTimeEntry> {
+        return clockifyRequest(`/workspaces/${workspaceId}/time-entries`, 'POST', entry);
     }
 }
