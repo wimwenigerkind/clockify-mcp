@@ -11,11 +11,12 @@ import {
 } from './types/clockify.js';
 import { clockifyRequest } from './api/client.js';
 import {registerWorkspaceTools} from "./tools/workspace-tools.js";
+import {formatJsonResponse} from "./utils/response-formatters.js";
 
 export const CLOCKIFY_API_KEY = process.env.CLOCKIFY_API_KEY;
 export const CLOCKIFY_API_BASE_URL = (process.env.CLOCKIFY_API_BASE_URL ??
     'https://api.clockify.me/api/v1') as string;
-const JSON_INDENT_SPACES = 2;
+export const JSON_INDENT_SPACES = 2;
 
 if (!CLOCKIFY_API_KEY) {
     console.error('Error: CLOCKIFY_API_KEY environment variable is required');
@@ -26,17 +27,6 @@ const server = new McpServer({
     name: 'clockify-server',
     version: '0.0.1',
 });
-
-export function formatJsonResponse(data: unknown) {
-    return {
-        content: [
-            {
-                type: 'text' as const,
-                text: JSON.stringify(data, null, JSON_INDENT_SPACES),
-            },
-        ],
-    };
-}
 
 registerWorkspaceTools(server);
 
