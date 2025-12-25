@@ -8,10 +8,9 @@ import {
     ClockifyProject,
     ClockifyTask,
     ClockifyTimeEntry,
-    ClockifyUser,
-    ClockifyWorkspace,
 } from './types/clockify.js';
 import { clockifyRequest } from './api/client.js';
+import {registerWorkspaceTools} from "./tools/workspace-tools.js";
 
 export const CLOCKIFY_API_KEY = process.env.CLOCKIFY_API_KEY;
 export const CLOCKIFY_API_BASE_URL = (process.env.CLOCKIFY_API_BASE_URL ??
@@ -28,7 +27,7 @@ const server = new McpServer({
     version: '0.0.1',
 });
 
-function formatJsonResponse(data: unknown) {
+export function formatJsonResponse(data: unknown) {
     return {
         content: [
             {
@@ -38,6 +37,8 @@ function formatJsonResponse(data: unknown) {
         ],
     };
 }
+
+registerWorkspaceTools(server);
 
 // Tool: Get current user
 server.registerTool(
@@ -57,66 +58,6 @@ server.registerTool(
             profilePicture: user.profilePicture,
             memberships: user.memberships,
         });
-    }
-);
-
-// Tool: Get workspace users
-server.registerTool(
-    'get_workspace_users',
-    {
-        title: 'Get Workspace Users',
-        description: 'Get all users in a workspace (defaults to active workspace if not specified)',
-        inputSchema: {
-            workspaceId: z
-                .string()
-                .optional()
-                .describe(
-                    'The ID of the workspace to get users from (optional, defaults to active workspace)'
-                ),
-        },
-    },
-    async ({ workspaceId }) => {
-        let targetWorkspaceId = workspaceId;
-
-        if (!targetWorkspaceId) {
-            const currentUser = await clockifyRequest('/user');
-            targetWorkspaceId = currentUser.activeWorkspace;
-        }
-
-        const users = await clockifyRequest(`/workspaces/${targetWorkspaceId}/users`);
-
-        return formatJsonResponse(
-            users.map((u: ClockifyUser) => ({
-                id: u.id,
-                name: u.name,
-                email: u.email,
-                status: u.status,
-                activeWorkspace: u.activeWorkspace,
-                profilePicture: u.profilePicture,
-                memberships: u.memberships,
-            }))
-        );
-    }
-);
-
-// Tool: Get workspaces
-server.registerTool(
-    'get_workspaces',
-    {
-        title: 'Get Workspaces',
-        description: 'Get all available workspaces for the authenticated user',
-        inputSchema: {},
-    },
-    async () => {
-        const workspaces = await clockifyRequest('/workspaces');
-
-        return formatJsonResponse(
-            workspaces.map((ws: ClockifyWorkspace) => ({
-                id: ws.id,
-                name: ws.name,
-                imageUrl: ws.imageUrl,
-            }))
-        );
     }
 );
 
