@@ -13,6 +13,7 @@ import {registerWorkspaceTools} from "./tools/workspace.js";
 import {formatJsonResponse} from "./utils/response-formatters.js";
 import {registerUserTools} from "./tools/user.js";
 import {registerClientTools} from "./tools/client.js";
+import {registerProjectTools} from "./tools/project.js";
 
 export const CLOCKIFY_API_KEY = process.env.CLOCKIFY_API_KEY;
 export const CLOCKIFY_API_BASE_URL = (process.env.CLOCKIFY_API_BASE_URL ??
@@ -32,92 +33,7 @@ const server = new McpServer({
 registerUserTools(server);
 registerWorkspaceTools(server);
 registerClientTools(server);
-
-// Tool: Get projects on workspace
-server.registerTool(
-    'get_projects_on_workspace',
-    {
-        title: 'Get Projects on Workspace',
-        description:
-            'Get all projects on a workspace (defaults to active workspace if not specified)',
-        inputSchema: {
-            workspaceId: z
-                .string()
-                .optional()
-                .describe(
-                    'The ID of the workspace to get projects from (optional, defaults to active workspace)'
-                ),
-        },
-    },
-    async ({ workspaceId }) => {
-        let targetWorkspaceId = workspaceId;
-
-        if (!targetWorkspaceId) {
-            const currentUser = await clockifyRequest('/user');
-            targetWorkspaceId = currentUser.activeWorkspace;
-        }
-
-        const projects = await clockifyRequest(`/workspaces/${targetWorkspaceId}/projects`);
-
-        return formatJsonResponse(
-            projects.map((project: ClockifyProject) => ({
-                id: project.id,
-                name: project.name,
-                note: project.note,
-                public: project.public,
-                duration: project.duration,
-                color: project.color,
-                memberships: project.memberships,
-            }))
-        );
-    }
-);
-
-// Tool: Get tasks on project
-server.registerTool(
-    'get_tasks_on_project',
-    {
-        title: 'Get Tasks on Project',
-        description: 'Get all tasks on a project',
-        inputSchema: {
-            workspaceId: z
-                .string()
-                .optional()
-                .describe('The ID of the workspace (optional, defaults to active workspace)'),
-            projectId: z.string().describe('The ID of the project to get tasks from'),
-        },
-    },
-    async ({ workspaceId, projectId }) => {
-        let targetWorkspaceId = workspaceId;
-
-        if (!targetWorkspaceId) {
-            const currentUser = await clockifyRequest('/user');
-            targetWorkspaceId = currentUser.activeWorkspace;
-        }
-
-        const tasks = await clockifyRequest(
-            `/workspaces/${targetWorkspaceId}/projects/${projectId}/tasks`
-        );
-
-        return formatJsonResponse(
-            tasks.map((task: ClockifyTask) => ({
-                id: task.id,
-                name: task.name,
-                status: task.status,
-                duration: task.duration,
-                assigneeId: task.assigneeId,
-                assigneeIds: task.assigneeIds,
-                billable: task.billable,
-                budgetEstimate: task.budgetEstimate,
-                costRate: task.costRate,
-                estimate: task.estimate,
-                hourlyRate: task.hourlyRate,
-                projectId: task.projectId,
-                userGroupIds: task.userGroupIds,
-            }))
-        );
-    }
-);
+registerProjectTools(server);
 
 // Tool: Get time entries
 server.registerTool(

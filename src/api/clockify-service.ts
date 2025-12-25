@@ -1,4 +1,4 @@
-import {ClockifyClient, ClockifyUser, ClockifyWorkspace} from "../types/clockify.js";
+import {ClockifyClient, ClockifyProject, ClockifyTask, ClockifyUser, ClockifyWorkspace} from "../types/clockify.js";
 import {clockifyRequest} from "./client.js";
 
 export class ClockifyService {
@@ -30,5 +30,13 @@ export class ClockifyService {
 
     async getWorkspaceClients(workspaceId: string): Promise<ClockifyClient[]> {
         return clockifyRequest(`/workspaces/${workspaceId}/clients`);
+    }
+
+    async getWorkspaceProjects(workspaceId: string): Promise<ClockifyProject[]> {
+        return clockifyRequest(`/workspaces/${workspaceId}/projects`);
+    }
+
+    async getProjectTasks(workspaceId: string, projectId: string): Promise<ClockifyTask[]> {
+        return clockifyRequest(`/workspaces/${workspaceId}/projects/${projectId}/tasks`);
     }
 }
