@@ -2,15 +2,7 @@
 
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { z } from 'zod';
-import {
-    ClockifyProject,
-    ClockifyTask,
-    ClockifyTimeEntry,
-} from './types/clockify.js';
-import { clockifyRequest } from './api/client.js';
 import {registerWorkspaceTools} from "./tools/workspace.js";
-import {formatJsonResponse} from "./utils/response-formatters.js";
 import {registerUserTools} from "./tools/user.js";
 import {registerClientTools} from "./tools/client.js";
 import {registerProjectTools} from "./tools/project.js";
