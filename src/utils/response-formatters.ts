@@ -1,4 +1,4 @@
-import {JSON_INDENT_SPACES} from '../index.js';
+import {JSON_INDENT_SPACES} from "../config/constants.js";
 
 export function formatJsonResponse(data: unknown) {
     return {
