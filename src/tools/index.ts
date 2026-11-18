@@ -1,6 +1,7 @@
 import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';
 import {registerClientTools} from './client.js';
 import {registerProjectTools} from './project.js';
+import {registerTagTools} from './tag.js';
 import {registerTaskTools} from './task.js';
 import {registerTimeEntryTools} from './time-entry.js';
 import {registerUserGroupTools} from './user-group.js';
@@ -14,5 +15,6 @@ export function registerAllTools(server: McpServer) {
     registerClientTools(server);
     registerProjectTools(server);
     registerTaskTools(server);
+    registerTagTools(server);
     registerTimeEntryTools(server);
 }
