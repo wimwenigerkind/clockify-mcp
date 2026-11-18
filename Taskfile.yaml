@@ -1,0 +1,51 @@
+version: '3'
+
+tasks:
+  install:
+    desc: Install dependencies
+    cmds:
+      - bun install
+
+  build:
+    desc: Build the TypeScript project
+    cmds:
+      - bun run build
+
+  clean:
+    desc: Remove the build directory
+    cmds:
+      - rm -rf build
+
+  lint:
+    desc: Run ESLint
+    cmds:
+      - bun run lint
+
+  format:
+    desc: Format code with Prettier
+    cmds:
+      - bun run format
+
+  format-check:
+    desc: Check code formatting
+    cmds:
+      - bun run format:check
+
+  license-check:
+    desc: Check dependency licenses
+    cmds:
+      - bun run license:check
+
+  test:
+    desc: Run all checks (build, lint, format, license)
+    cmds:
+      - task: build
+      - task: lint
+      - task: format-check
+      - task: license-check
+
+  inspector:
+    desc: Run the MCP Inspector against the built server
+    deps: [build]
+    cmds:
+      - bunx --yes @modelcontextprotocol/inspector node build/index.js
