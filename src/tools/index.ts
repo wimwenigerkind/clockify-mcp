@@ -1,6 +1,7 @@
 import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';
 import {registerApprovalTools} from './approval.js';
 import {registerClientTools} from './client.js';
+import {registerCustomFieldTools} from './custom-field.js';
 import {registerEntityTools} from './entity.js';
 import {registerExpenseTools} from './expense.js';
 import {registerInvoiceTools} from './invoice.js';
@@ -31,4 +32,5 @@ export function registerAllTools(server: McpServer) {
     registerReportTools(server);
     registerApprovalTools(server);
     registerWebhookTools(server);
+    registerCustomFieldTools(server);
 }
