@@ -5,6 +5,7 @@ import {registerInvoiceTools} from './invoice.js';
 import {registerProjectTools} from './project.js';
 import {registerTagTools} from './tag.js';
 import {registerTaskTools} from './task.js';
+import {registerTemplateTools} from './template.js';
 import {registerTimeEntryTools} from './time-entry.js';
 import {registerUserGroupTools} from './user-group.js';
 import {registerUserTools} from './user.js';
@@ -21,4 +22,5 @@ export function registerAllTools(server: McpServer) {
     registerTimeEntryTools(server);
     registerExpenseTools(server);
     registerInvoiceTools(server);
+    registerTemplateTools(server);
 }
