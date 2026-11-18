@@ -13,6 +13,7 @@ import {registerTagTools} from './tag.js';
 import {registerTaskTools} from './task.js';
 import {registerTemplateTools} from './template.js';
 import {registerTimeEntryTools} from './time-entry.js';
+import {registerTimeOffTools} from './time-off.js';
 import {registerUserGroupTools} from './user-group.js';
 import {registerUserTools} from './user.js';
 import {registerWebhookTools} from './webhook.js';
@@ -37,4 +38,5 @@ export function registerAllTools(server: McpServer) {
     registerCustomFieldTools(server);
     registerSchedulingTools(server);
     registerHolidayTools(server);
+    registerTimeOffTools(server);
 }
