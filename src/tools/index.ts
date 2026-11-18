@@ -7,6 +7,7 @@ import {registerExpenseTools} from './expense.js';
 import {registerInvoiceTools} from './invoice.js';
 import {registerProjectTools} from './project.js';
 import {registerReportTools} from './report.js';
+import {registerSchedulingTools} from './scheduling.js';
 import {registerTagTools} from './tag.js';
 import {registerTaskTools} from './task.js';
 import {registerTemplateTools} from './template.js';
@@ -33,4 +34,5 @@ export function registerAllTools(server: McpServer) {
     registerApprovalTools(server);
     registerWebhookTools(server);
     registerCustomFieldTools(server);
+    registerSchedulingTools(server);
 }
