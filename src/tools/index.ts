@@ -12,6 +12,7 @@ import {registerTemplateTools} from './template.js';
 import {registerTimeEntryTools} from './time-entry.js';
 import {registerUserGroupTools} from './user-group.js';
 import {registerUserTools} from './user.js';
+import {registerWebhookTools} from './webhook.js';
 import {registerWorkspaceTools} from './workspace.js';
 
 export function registerAllTools(server: McpServer) {
@@ -29,4 +30,5 @@ export function registerAllTools(server: McpServer) {
     registerEntityTools(server);
     registerReportTools(server);
     registerApprovalTools(server);
+    registerWebhookTools(server);
 }
