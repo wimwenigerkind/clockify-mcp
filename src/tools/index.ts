@@ -4,6 +4,7 @@ import {registerClientTools} from './client.js';
 import {registerCustomFieldTools} from './custom-field.js';
 import {registerEntityTools} from './entity.js';
 import {registerExpenseTools} from './expense.js';
+import {registerHolidayTools} from './holiday.js';
 import {registerInvoiceTools} from './invoice.js';
 import {registerProjectTools} from './project.js';
 import {registerReportTools} from './report.js';
@@ -35,4 +36,5 @@ export function registerAllTools(server: McpServer) {
     registerWebhookTools(server);
     registerCustomFieldTools(server);
     registerSchedulingTools(server);
+    registerHolidayTools(server);
 }
