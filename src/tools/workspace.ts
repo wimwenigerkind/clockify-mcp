@@ -1,82 +1,70 @@
 import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';
 import {z} from 'zod';
-import {ClockifyService} from '../api/clockify-service.js';
-import {ClockifyWorkspace} from '../types/clockify.js';
-import {formatJsonResponse} from '../utils/response-formatters.js';
+import {clockifyRequest} from '../api/client.js';
+import {defineTool, rateSchema, workspaceIdSchema} from './helpers.js';
 
-const clockifyService = new ClockifyService();
+export const roleSchema = z.enum(['WORKSPACE_ADMIN', 'OWNER', 'TEAM_MANAGER', 'PROJECT_MANAGER']);
 
 export function registerWorkspaceTools(server: McpServer) {
-    // Tool: Get Workspace
-    server.registerTool(
-        'get_workspace',
-        {
-            title: 'Get Workspace',
-            description: 'Get Workspace by Id',
-            inputSchema: {
-                workspaceId: z
-                    .string()
-                    .optional()
-                    .describe(
-                        'The ID of the workspace to get (optional, defaults to active workspace)'
-                    ),
-            },
+    defineTool(server, {
+        name: 'get_workspaces',
+        title: 'Get Workspaces',
+        description: 'Get all available workspaces for the authenticated user',
+        inputSchema: {
+            roles: z.array(roleSchema).optional().describe('Filter by workspace roles'),
         },
-        async ({workspaceId}) => {
-            try {
-                const workspace = workspaceId
-                    ? await clockifyService.getWorkspace(workspaceId)
-                    : await clockifyService.getActiveWorkspace();
+        action: 'fetch workspaces',
+        handler: ({roles}) => clockifyRequest('/workspaces', {query: {roles}}),
+    });
 
-                return formatJsonResponse({
-                    id: workspace.id,
-                    name: workspace.name,
-                    imageUrl: workspace.imageUrl,
-                });
-            } catch (error) {
-                return {
-                    isError: true,
-                    content: [
-                        {
-                            type: 'text' as const,
-                            text: `Failed to fetch workspace: ${error instanceof Error ? error.message : 'Unknown error'}`,
-                        },
-                    ],
-                };
-            }
-        }
-    );
+    defineTool(server, {
+        name: 'get_workspace',
+        title: 'Get Workspace',
+        description: 'Get a workspace by ID (defaults to active workspace)',
+        inputSchema: {workspaceId: workspaceIdSchema},
+        action: 'fetch workspace',
+        handler: async (_, {workspaceId}) => clockifyRequest(`/workspaces/${await workspaceId()}`),
+    });
 
-    // Tool: Get Workspaces
-    server.registerTool(
-        'get_workspaces',
-        {
-            title: 'Get Workspaces',
-            description: 'Get all available workspaces for the authenticated user',
-            inputSchema: {},
+    defineTool(server, {
+        name: 'add_workspace',
+        title: 'Add Workspace',
+        description: 'Create a new workspace',
+        inputSchema: {
+            name: z.string().describe('Name of the new workspace'),
+            organizationId: z.string().optional().describe('ID of the organization'),
         },
-        async () => {
-            try {
-                const workspaces = await clockifyService.getWorkspaces();
+        action: 'add workspace',
+        handler: (body) => clockifyRequest('/workspaces', {method: 'POST', body}),
+    });
 
-                return formatJsonResponse(
-                    workspaces.map((ws: ClockifyWorkspace) => ({
-                        id: ws.id,
-                        name: ws.name,
-                        imageUrl: ws.imageUrl,
-                    }))
-                );
-            } catch (error) {
-                return {
-                    isError: true,
-                    content: [
-                        {
-                            type: 'text' as const,
-                            text: `Failed to fetch workspaces: ${error instanceof Error ? error.message : 'Unknown error'}`,
-                        },
-                    ],
-                };
-            }
-        }
-    );
+    defineTool(server, {
+        name: 'update_workspace_cost_rate',
+        title: 'Update Workspace Cost Rate',
+        description: 'Update the cost rate of a workspace',
+        inputSchema: {workspaceId: workspaceIdSchema, ...rateSchema},
+        action: 'update workspace cost rate',
+        handler: async ({amount, since}, {workspaceId}) =>
+            clockifyRequest(`/workspaces/${await workspaceId()}/cost-rate`, {
+                method: 'PUT',
+                body: {amount, since},
+            }),
+    });
+
+    defineTool(server, {
+        name: 'update_workspace_hourly_rate',
+        title: 'Update Workspace Billable Rate',
+        description: 'Update the billable (hourly) rate of a workspace',
+        inputSchema: {
+            workspaceId: workspaceIdSchema,
+            ...rateSchema,
+            currency: z.string().describe('Currency code of the rate, e.g. USD'),
+        },
+        action: 'update workspace hourly rate',
+        handler: async ({amount, currency, since}, {workspaceId}) =>
+            clockifyRequest(`/workspaces/${await workspaceId()}/hourly-rate`, {
+                method: 'PUT',
+                body: {amount, currency, since},
+            }),
+    });
 }

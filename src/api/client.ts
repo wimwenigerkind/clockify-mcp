@@ -1,37 +1,47 @@
 import {CLOCKIFY_API_BASE_URL, CLOCKIFY_API_KEY} from '../config/constants.js';
 
-export async function clockifyRequest(endpoint: string, method = 'GET', body?: unknown) {
-    if (!CLOCKIFY_API_KEY) {
-        throw new Error('CLOCKIFY_API_KEY is not configured');
-    }
+export type QueryValue = string | number | boolean | undefined | null | (string | number)[];
 
-    const response = await fetch(`${CLOCKIFY_API_BASE_URL}${endpoint}`, {
+export interface RequestOptions {
+    method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+    query?: Record<string, QueryValue>;
+    body?: unknown;
+    /** Overrides the base URL, e.g. for the reports API. */
+    baseUrl?: string;
+}
+
+export function buildQueryString(query: Record<string, QueryValue> = {}): string {
+    const params = new URLSearchParams();
+    for (const [key, value] of Object.entries(query)) {
+        if (value === undefined || value === null) continue;
+        for (const item of Array.isArray(value) ? value : [value]) {
+            params.append(key, String(item));
+        }
+    }
+    const result = params.toString();
+    return result ? `?${result}` : '';
+}
+
+/** Calls the Clockify API and returns the parsed JSON body (or null for empty responses). */
+export async function clockifyRequest<T = unknown>(
+    path: string,
+    {method = 'GET', query, body, baseUrl = CLOCKIFY_API_BASE_URL}: RequestOptions = {}
+): Promise<T> {
+    const response = await fetch(`${baseUrl}${path}${buildQueryString(query)}`, {
         method,
         headers: {
-            'X-Api-Key': CLOCKIFY_API_KEY,
+            'X-Api-Key': CLOCKIFY_API_KEY as string,
             'Content-Type': 'application/json',
         },
-        body: body ? JSON.stringify(body) : undefined,
+        body: body === undefined ? undefined : JSON.stringify(body),
     });
 
+    const text = await response.text();
     if (!response.ok) {
-        let errorMessage = `Clockify API error: ${response.status} ${response.statusText}`;
-        try {
-            const errorBody = await response.text();
-            if (errorBody) {
-                errorMessage += ` - ${errorBody}`;
-            }
-        } catch {
-            // Ignore error when reading response body fails
-        }
-        throw new Error(errorMessage);
+        throw new Error(
+            `Clockify API error: ${response.status} ${response.statusText}${text ? ` - ${text}` : ''}`
+        );
     }
 
-    const contentType = response.headers.get('content-type');
-    if (contentType && contentType.includes('application/json')) {
-        const text = await response.text();
-        return text ? JSON.parse(text) : null;
-    }
-
-    return null;
+    return (text ? JSON.parse(text) : null) as T;
 }
