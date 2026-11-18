@@ -121,7 +121,7 @@ const detailedFilterShape = z
             .optional()
             .describe('Additional options'),
         auditFilter: z
-            .record(z.unknown())
+            .record(z.string(), z.unknown())
             .optional()
             .describe('Audit filter (e.g. changed entries)'),
     })
@@ -183,12 +183,15 @@ function defineReport<Shape extends ZodRawShape>(
         description: `Generate a ${title.toLowerCase()} for a workspace (Reports API)`,
         inputSchema: {workspaceId: workspaceIdSchema, ...commonFilterShape, ...extra},
         action: `generate ${title.toLowerCase()}`,
-        handler: async ({workspaceId: _, ...body}, {workspaceId}) =>
-            clockifyRequest(`/workspaces/${await workspaceId()}/reports/${path}`, {
+        // zod 4 cannot infer the keys of the generic `extra` shape, so the args are narrowed here.
+        handler: async (args, {workspaceId}) => {
+            const {workspaceId: _, ...body} = args as {workspaceId?: string};
+            return clockifyRequest(`/workspaces/${await workspaceId()}/reports/${path}`, {
                 method: 'POST',
                 baseUrl: CLOCKIFY_REPORTS_BASE_URL,
                 body,
-            }),
+            });
+        },
     });
 }
 

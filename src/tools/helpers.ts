@@ -34,7 +34,7 @@ interface ToolDefinition<Shape extends ZodRawShape> {
     /** Used as prefix for error messages, e.g. "fetch projects". */
     action: string;
     handler: (
-        args: z.objectOutputType<Shape, z.ZodTypeAny>,
+        args: z.infer<z.ZodObject<Shape>>,
         helpers: {
             workspaceId: () => Promise<string>;
             userId: () => Promise<string>;
@@ -77,7 +77,7 @@ export function defineTool<Shape extends ZodRawShape>(
 ) {
     const {name, title, description, inputSchema, action, handler} = definition;
     server.registerTool(name, {title, description, inputSchema}, (async (
-        args: z.objectOutputType<Shape, z.ZodTypeAny>
+        args: z.infer<z.ZodObject<Shape>>
     ) => {
         try {
             const result = await handler(args, {
