@@ -4,6 +4,7 @@ import {registerEntityTools} from './entity.js';
 import {registerExpenseTools} from './expense.js';
 import {registerInvoiceTools} from './invoice.js';
 import {registerProjectTools} from './project.js';
+import {registerReportTools} from './report.js';
 import {registerTagTools} from './tag.js';
 import {registerTaskTools} from './task.js';
 import {registerTemplateTools} from './template.js';
@@ -25,4 +26,5 @@ export function registerAllTools(server: McpServer) {
     registerInvoiceTools(server);
     registerTemplateTools(server);
     registerEntityTools(server);
+    registerReportTools(server);
 }

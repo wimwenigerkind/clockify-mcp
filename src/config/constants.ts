@@ -1,6 +1,8 @@
 export const CLOCKIFY_API_KEY = process.env.CLOCKIFY_API_KEY;
 export const CLOCKIFY_API_BASE_URL =
     process.env.CLOCKIFY_API_BASE_URL ?? 'https://api.clockify.me/api/v1';
+export const CLOCKIFY_REPORTS_BASE_URL =
+    process.env.CLOCKIFY_REPORTS_BASE_URL ?? 'https://reports.api.clockify.me/v1';
 export const JSON_INDENT_SPACES = 2;
 
 if (!CLOCKIFY_API_KEY) {
